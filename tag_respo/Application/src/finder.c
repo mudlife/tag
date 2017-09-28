@@ -141,7 +141,7 @@ void finder_set_oper(u8 oper)
         finder_gen_beacon(FINDER_CMD_NONE, curr_state);
         switch (curr_state) {
         case FINDER_STAT_PAIRING:
-            ble_start_adv_timer(1000, 100);
+            ble_start_adv_timer(500, 100);
             /* Set timer */
             FINDER_OPER_SET_TIMER(30, FINDER_OPER_NEXT_IDLE);
             break;
@@ -182,6 +182,8 @@ void finder_set_oper(u8 oper)
  * @return 0 if PDU is invalid or command makes no BLE protocol change.
  *         1 if command makes BLE protocol change.
  */ 
+extern u8 loop_count;
+extern u8 t_space;
 u8 finder_proc_cmd(u8 cmd)
 {
     switch (cmd) {
@@ -193,7 +195,8 @@ u8 finder_proc_cmd(u8 cmd)
         if (curr_state != FINDER_STAT_ALERT) {
             curr_state = FINDER_STAT_ALERT;
             finder_set_oper(FINDER_OPER_ADV);
-
+            loop_count = 1;
+            t_space = 5;
 //            return (1);
         }
         break;
@@ -210,7 +213,7 @@ u8 finder_proc_cmd(u8 cmd)
 //						beep_start(50, 50, 1);
             curr_state = FINDER_STAT_IDLE;
             finder_set_oper(FINDER_OPER_ADV);
-
+           
 //            return (1);
 //        }
         break;

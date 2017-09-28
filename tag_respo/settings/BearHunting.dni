@@ -38,7 +38,7 @@ ShowSource=1
 [Simulator]
 Freq=16000000
 [DebugChecksum]
-Checksum=-604009073
+Checksum=1748470250
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -62,10 +62,12 @@ LogFile=_ ""
 [Breakpoints]
 Bp0=_ "STD_CODE" "{D:\Developments\Home\TongRenGuiZhou\Tags Terminal}.34.5" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\Application\src}.29.7" 0 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.284.9" 1 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.141.9" 1 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.369.5" 1 0 0 0 "" 0 ""
-Count=5
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.287.9" 1 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.372.5" 1 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.219.9" 1 0 0 0 "" 0 ""
+Bp5=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.146.13" 1 0 0 0 "" 0 ""
+Bp6=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.199.13" 1 0 0 0 "" 0 ""
+Count=7
 [Aliases]
 A0=_ "D:\Developments\Home\TongRenGuiZhou\Tags Terminal\Release_v2.0\stm8l_tags_v2.0_release\stm8l_tags_v2.0\Application\src\main.c" ""
 A1=_ "D:\Developments\Home\TongRenGuiZhou\Tags Terminal\sub\stm8l_tags_sub_v2.1\Application\src\main.c" ""

@@ -34,7 +34,7 @@ static u8 send_times[16]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 extern uint32_t PotVoltage;
 
 static volatile u8 t_info=0;//t_info=0,transmit the custom message(key+id),t_info=1,transmit all message(own message+key+id)
-static volatile u8 t_space=0;
+u8 t_space=0;
 static volatile signed char t_times=6;
 static volatile u8 t_pa=0;
 static volatile u8 t_para_test=0;
@@ -43,7 +43,7 @@ static volatile u16 totaltimes=0;
 static u32 timecnt=0;
 
 static bool dActiveFlag=FALSE;
-
+u8 loop_count = 9;
 extern u8 dVDDlow;
 extern u8 dOwnInfoBuf[];
 extern u8 dCustInfoBuf[];
@@ -80,7 +80,7 @@ void iwdg_init(void)
 
 int main(void)
 {
-  u8 i;
+        u8 i;
 	clock_init();
         iwdg_init();
 	get_id_information();
@@ -95,29 +95,36 @@ int main(void)
         ble_proto_init();
         finder_init();
         timer4_cfg();
+        
   	while(1)
  	{
           
-          for(i=0;i<2;i++){
-            IWDG_ReloadCounter();
-             _CE__0;
+            _CE__0;//WL1600失能
             delay_ms(2);
-            _CE__1;
+            _CE__1;//WL1600使能
             delay_ms(1);
-            _1600_registers_init(0);
-            if(finder_is_oper_timeout == 1){
-              finder_is_oper_timeout = 0;
-              finder_proc_oper_timeout();
-            }
-               ble_proto_run();
+            _1600_registers_init(0);//初始化WL1600寄存器，配置为BLE模式
+            
+//           if(finder_is_oper_timeout == 1){
+//              finder_is_oper_timeout = 0;
+//              finder_proc_oper_timeout();
+//            }
+//          
+            for(i=0;i<loop_count;i++){//BLE 发送和接收
+              IWDG_ReloadCounter();
 
+                 ble_proto_run();
+              delay_ms(100);
+            }
+          
+          
             IWDG_ReloadCounter();
 
-             _CE__0;
+             _CE__0;//WL1600失能
              delay_ms(2);
-            _CE__1;
+            _CE__1;//WL1600使能
   //           delay_ms(1);
-            _1600_registers_init(1);
+            _1600_registers_init(1);//初始化WL1600寄存器，配置为 防盗器 模式
 
             if(dActiveFlag)
             {
@@ -129,20 +136,18 @@ int main(void)
             {
               detect_process();
             }
-          
-          }
-          
-             _CE__0;
-             sleep(5);
+            
+             _CE__0;//WL1600失能
+             sleep(t_space);//MCU休眠
             after_wakeup();
 //            delay_ms(90);
-            _CE__1;
+            _CE__1;//WL1600使能
             delay_ms(1);
      
   	}
   	return 0;
 }
-#if 1
+
 static u8 dTimeCnt=0;
 extern u8 RXERROR;
 extern u8 TXERROR;
@@ -264,7 +269,7 @@ static void output_message(void)
   s8 i=0;
   u16 cnt=0;
   write1600(15,send_channel);
-#if 1
+
   _1600_clean_tx_fifo();
 //  if(t_para_test==0x05&&t_info)
 //  {
@@ -312,24 +317,7 @@ static void output_message(void)
   }
   DISABLE_TX();
   se2438t_enter_all_off_mode();
-#else  
-   send_space[0] = 9;
-    send_space[1] = read1600(18);
-    send_space[2] = t_space;
-    for(i=0;i<=5;i++)
-    {
-      send_space[3+i] = dCustInfoBuf[i];
-    }
-    send_space[8] = dVDDlow;
-  ble_tx(send_space,9);
-//  TESTIO_TOGGLE;
 
-  TESTIO_TOGGLE;
-  delay_1us();
-  delay_1us();
-  TESTIO_TOGGLE;
-
-#endif
   write1600_bit(70,6,1);
   if((--t_times)<=0)
   {
@@ -339,4 +327,3 @@ static void output_message(void)
 //  after_wakeup();
 }
 
-#endif

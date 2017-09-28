@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "C:\Users\JX\Desktop\tag_respo\settings\BearHunting.Debug.general.xcl" --backend -f "C:\Users\JX\Desktop\tag_respo\settings\BearHunting.Debug.driver.xcl" 
+"D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "F:\github\tag\tag_respo\settings\BearHunting.Debug.general.xcl" --backend -f "F:\github\tag\tag_respo\settings\BearHunting.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "C:\Users\JX\Desktop\tag_respo\settings\BearHunting.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\JX\Desktop\tag_respo\settings\BearHunting.Debug.driver.xcl" 
+"D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\common\bin\cspybat" -f "F:\github\tag\tag_respo\settings\BearHunting.Debug.general.xcl" "--debug_file=%~1" --backend -f "F:\github\tag\tag_respo\settings\BearHunting.Debug.driver.xcl" 
 
 @echo off 
 :end
