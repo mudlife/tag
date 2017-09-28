@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<userOverrides>
+  <override>
+    <path>D:\Developments\Home\TongRenGuiZhou\Tags Terminal\Debug\stm8l_tags_v2.0\Application\src\main.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>D:\Developments\Home\TongRenGuiZhou\Tags Terminal\Release_v2.0\stm8l_tags_v2.0\Application\src\main.c</path>
+    <encoding>System</encoding>
+  </override>
+  <override>
+    <path>D:\Developments\Home\TongRenGuiZhou\Tags Terminal\tag_respo\Application\src\main.c</path>
+    <encoding>System</encoding>
+  </override>
+</userOverrides>
+
+

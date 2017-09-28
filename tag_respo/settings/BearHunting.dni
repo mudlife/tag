@@ -1,0 +1,83 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[DataLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+[Breakpoints2]
+Count=0
+[Interrupts]
+Enabled=1
+[MemoryMap]
+Enabled=0
+Base=0
+UseAuto=0
+TypeViolation=1
+UnspecRange=1
+ActionState=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[Simulator]
+Freq=16000000
+[DebugChecksum]
+Checksum=-604009073
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[array_types]
+Fmt0=u8[6]	4	0
+[watch_formats]
+Fmt0={W}1:dCustInfoBuf	0	5
+Fmt1={W}1:r_info	4	0
+[DataSample]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_CODE" "{D:\Developments\Home\TongRenGuiZhou\Tags Terminal}.34.5" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\Application\src}.29.7" 0 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.284.9" 1 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.141.9" 1 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$\Application\src\finder.c}.369.5" 1 0 0 0 "" 0 ""
+Count=5
+[Aliases]
+A0=_ "D:\Developments\Home\TongRenGuiZhou\Tags Terminal\Release_v2.0\stm8l_tags_v2.0_release\stm8l_tags_v2.0\Application\src\main.c" ""
+A1=_ "D:\Developments\Home\TongRenGuiZhou\Tags Terminal\sub\stm8l_tags_sub_v2.1\Application\src\main.c" ""
+A2=_ "D:\Developments\Home\TongRenGuiZhou\Tags Terminal\sub\stm8l_tags_sub_v2.1\STM8L15x_StdPeriph_Driver\src\stm8l15x_clk.c" ""
+A3=_ "D:\Developments\Home\TongRenGuiZhou\Tags Terminal\tag_respo\STM8L15x_StdPeriph_Driver\src\stm8l15x_spi.c" ""
+A4=_ "E:\GuiZhou\Sub\stm8l_tags_v1.0_sub\Application\src\1600.c" ""
+A5=_ "E:\GuiZhou\Sub\stm8l_tags_v1.0_sub\Application\src\eeprom.c" ""
+A6=_ "E:\GuiZhou\Sub\stm8l_tags_v1.0_sub\Application\src\spi.c" ""
+A7=_ "E:\GuiZhou\Sub\stm8l_tags_v1.0_sub\STM8L15x_StdPeriph_Driver\src\stm8l15x_clk.c" ""
+A8=_ "E:\GuiZhou\Sub\stm8l_tags_v1.0_sub\STM8L15x_StdPeriph_Driver\src\stm8l15x_gpio.c" ""
+A9=_ "E:\GuiZhou\Sub\stm8l_tags_v1.0_sub\STM8L15x_StdPeriph_Driver\src\stm8l15x_rtc.c" ""
+Count=10
+SuppressDialog=1
+[DebuggerSettings]
+DisableInterruptsWhenStepping=0
