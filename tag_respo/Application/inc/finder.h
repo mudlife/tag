@@ -11,6 +11,8 @@
 #define FINDER_CMD_SEARCH_ON        (0x4)
 #define FINDER_CMD_PHOTO            (0x5)
 #define FINDER_CMD_SEARCH_OFF       (0x6)
+
+#define FINDER_CMD_ADV_TIME_3       (0xA)
 /* Finder's states */
 #define FINDER_STAT_NONE            (0x0)
 #define FINDER_STAT_PAIRING         (0x1)

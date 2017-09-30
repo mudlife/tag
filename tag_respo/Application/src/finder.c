@@ -9,6 +9,11 @@
 #include "ble_proto.h"
 #include "finder.h"
 #include <string.h>
+#include "testio.h"
+
+extern u8 loop_count;
+extern u8 t_space;
+
 
 /** Number of the same command received before processing */
 #define MIN_CMD_CNT         (2)
@@ -118,14 +123,21 @@ void finder_gen_beacon(u8 cmd, u8 state)
  */
 void finder_proc_oper_timeout(void)
 {
-    switch (finder_oper_next) {
-    case FINDER_OPER_NEXT_IDLE:
-        curr_state = FINDER_STAT_IDLE;
-    case FINDER_OPER_NEXT_CURR_STATE:
-        finder_set_oper(FINDER_OPER_ADV);
-        break;
+    if(curr_state == FINDER_STAT_ALERT){
+      loop_count = 2;
+      t_space = 10;
+      finder_set_oper(FINDER_OPER_ADV);
+    }else{
+      switch (finder_oper_next) {
+      case FINDER_OPER_NEXT_IDLE:
+          curr_state = FINDER_STAT_IDLE;
+      case FINDER_OPER_NEXT_CURR_STATE:
+          finder_set_oper(FINDER_OPER_ADV);
+          break;
+      }
     }
     finder_oper_next = FINDER_OPER_NEXT_NONE;
+  
 }
 
 /**
@@ -138,29 +150,31 @@ void finder_set_oper(u8 oper)
     switch (oper) {
     case FINDER_OPER_ADV:
        /* Advertise according to current state */
-        finder_gen_beacon(FINDER_CMD_NONE, curr_state);
+        finder_gen_beacon(FINDER_CMD_ADV_TIME_3, curr_state);
         switch (curr_state) {
         case FINDER_STAT_PAIRING:
-            ble_start_adv_timer(500, 100);
+//            ble_start_adv_timer(500, 100);
             /* Set timer */
-            FINDER_OPER_SET_TIMER(30, FINDER_OPER_NEXT_IDLE);
+//            FINDER_OPER_SET_TIMER(300, FINDER_OPER_NEXT_IDLE);
             break;
         case FINDER_STAT_IDLE:
 //            ble_start_adv_timer(1000, 300);
             break;
         case FINDER_STAT_ALERT:
+          FINDER_OPER_SET_TIMER(20, FINDER_OPER_NEXT_IDLE);
+            //finder_is_oper_timeout = 0;
 //            ble_start_adv_timer(500, 100);
             break;
-//	case FINDER_STAT_SEARCH_ON:
+	case FINDER_STAT_SEARCH_ON:
 //            ble_start_adv_timer(500, 100);
 //            /* Set timer */
-//            FINDER_OPER_SET_TIMER(3, FINDER_OPER_NEXT_IDLE);
-//            break;
-//	case FINDER_STAT_SEARCH_OFF:
+            FINDER_OPER_SET_TIMER(2, FINDER_OPER_NEXT_IDLE);
+            break;
+	case FINDER_STAT_SEARCH_OFF:
 //            ble_start_adv_timer(500, 100);
 //            /* Set timer */
-//            FINDER_OPER_SET_TIMER(3, FINDER_OPER_NEXT_IDLE);
-//            break;
+            FINDER_OPER_SET_TIMER(2, FINDER_OPER_NEXT_IDLE);
+            break;
         }
         ble_set_state(BLE_STATE_ADV);
         break;
@@ -182,8 +196,7 @@ void finder_set_oper(u8 oper)
  * @return 0 if PDU is invalid or command makes no BLE protocol change.
  *         1 if command makes BLE protocol change.
  */ 
-extern u8 loop_count;
-extern u8 t_space;
+
 u8 finder_proc_cmd(u8 cmd)
 {
     switch (cmd) {
@@ -195,9 +208,10 @@ u8 finder_proc_cmd(u8 cmd)
         if (curr_state != FINDER_STAT_ALERT) {
             curr_state = FINDER_STAT_ALERT;
             finder_set_oper(FINDER_OPER_ADV);
-            loop_count = 1;
-            t_space = 5;
-//            return (1);
+//            TESTIO_TOGGLE;
+//          delay_ms(10);
+//          TESTIO_TOGGLE;
+           return (1);
         }
         break;
     case FINDER_CMD_DISABLE_ALERT://1?¡À?¡¤¨¤?a
@@ -217,22 +231,22 @@ u8 finder_proc_cmd(u8 cmd)
 //            return (1);
 //        }
         break;
-//    case FINDER_CMD_SEARCH_ON://?¡ã?¨°?a
-//
-//        curr_state = FINDER_STAT_SEARCH_ON;
-//        finder_set_oper(FINDER_OPER_ADV);
-//
-//        return (1);
-//
-//        break;
-//    case FINDER_CMD_SEARCH_OFF://?¡ã?¨°1?
-//
-//        curr_state = FINDER_STAT_SEARCH_OFF;
-//        finder_set_oper(FINDER_OPER_ADV);
-//
-//        return (1);
-//
-//        break;
+    case FINDER_CMD_SEARCH_ON://?¡ã?¨°?a
+
+        curr_state = FINDER_STAT_SEARCH_ON;
+        finder_set_oper(FINDER_OPER_ADV);
+
+        return (1);
+
+        break;
+    case FINDER_CMD_SEARCH_OFF://?¡ã?¨°1?
+
+        curr_state = FINDER_STAT_SEARCH_OFF;
+        finder_set_oper(FINDER_OPER_ADV);
+
+        return (1);
+
+        break;
     default:
         break;
     }
@@ -284,6 +298,7 @@ u8 finder_proc_pkt(u8 *pdu)
     if ((rx_cmd_cnt != 0xFF) && (++rx_cmd_cnt == MIN_CMD_CNT)) {
         rx_cmd_cnt = 0xFF;
         /* Got the same packet N times. Process command */
+       
         return finder_proc_cmd(tmp_cmd);
     }
     
@@ -379,4 +394,6 @@ void finder_init(void)
     rx_cmd_cnt = 0;
     
     finder_set_oper(FINDER_OPER_ADV);
+    FINDER_OPER_SET_TIMER(300, FINDER_OPER_NEXT_IDLE);
+    
 }

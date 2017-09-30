@@ -123,10 +123,10 @@ void _1600_registers_init(u8 mode)
       errorcnt=0;
     }
   }
-
+  write1600(81,0x44);//crc bits should be right
 
  
-  }else{
+  }else{//BLE
   for(i=0;dRegisterTable[i][0] != 255;)
   {
     IWDG_ReloadCounter();
@@ -145,9 +145,10 @@ void _1600_registers_init(u8 mode)
       errorcnt=0;
     }
   }
+   write1600(81,0x43);//crc bits should be right
   }
   
-   write1600(81,0x44);//crc bits should be right
+  
   write1600_bit(82,5,1);//enable length mask
   write1600_bit(33,1,1);//enable pkt flag mask
   

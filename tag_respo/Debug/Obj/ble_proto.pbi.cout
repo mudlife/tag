@@ -1,18 +1,18 @@
-"C:\Users\JX\Desktop\tag_respo\Application\src\ble_proto.c"
+"F:\github\tag\tag_respo\Application\src\ble_proto.c"
 -std=c99
 -ferror-limit=100
 -I
-C:\Users\JX\Desktop\tag_respo\STM8L15x_StdPeriph_Driver\inc
+F:\github\tag\tag_respo\STM8L15x_StdPeriph_Driver\inc
 -I
-C:\Users\JX\Desktop\tag_respo\Application\inc
+F:\github\tag\tag_respo\Application\inc
 -I
 D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc
 -I
 D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.3\stm8\inc\c
 -I
-C:\Users\JX\Desktop\tag_respo\STM8L15x_StdPeriph_Driver\inc
+F:\github\tag\tag_respo\STM8L15x_StdPeriph_Driver\inc
 -I
-C:\Users\JX\Desktop\tag_respo\Application\inc
+F:\github\tag\tag_respo\Application\inc
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=127
 -D__CHAR_MIN__=(-__CHAR_MAX__-1)

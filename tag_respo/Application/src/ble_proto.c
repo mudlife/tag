@@ -7,7 +7,8 @@
 #include "timer.h"
 #include "spi.h"
 #include "se2438t.h"
-
+#include "sleep.h"
+#include "testio.h"
 /*
  *           adv interval            adv delay           adv interval            adv delay
  * <-------------------------------><---------><-------------------------------><--------->
@@ -21,7 +22,7 @@
 u16 adv_interval_reload = 0; // ms
 u16 adv_interval_cntdn = 0;
 volatile u8 is_adv_interval_started = 0;
-#define ADV_DELAY               (10) // ms. Core Spec: range from 0~10ms
+#define ADV_DELAY               (100) // ms. Core Spec: range from 0~10ms
 u16 adv_delay_cntdn = 0;
 u16 chn_interval_reload = 0; // ms
 u16 chn_interval_cntdn = 0;
@@ -151,7 +152,7 @@ void ble_tx(u8 *buf, u8 len)
     WRITE_TX_VCO();
     ENABLE_PACK_LEN();
     ENABLE_PKT_FLAG_INTR();
-    RESET_FIFO_WR_PTR();
+   // RESET_FIFO_WR_PTR();
     _1600_clean_tx_fifo();
     /* Write packet length */
     WRITE_FIFO(len);
@@ -278,67 +279,87 @@ void ble_proto_run(void)
 {
      BLE_PKT tmp;
     u8 rx_len;
-    u8 rx_index = 2;
+    u8 rx_idex = 5;
     /* Update state */
     ble_curr_state = ble_next_state;
-    
-    if (is_chn_interval_started == 0) {    //如果chn_interval没有到，就等待，什么都不做
-//        SET_1600_SLEEP_MODE();
-//        POWER_IDLE();          //mcu进入空闲模式(2.8mA)
-//        SET_1600_IDLE_MODE();
-//        
-        if (is_chn_interval_started == 0) {    //如果chn_interval没有到，就等待，什么都不做
-            /* Channel interval not started yet */
-            return;
-        }
-    }
-    is_chn_interval_started = 0;           //如果到了就设为0，并进行下面的处理
+#if 1
 
-    if (is_adv_interval_started == 1) {        //如果是新的adv interval开始了，就从37信道开始，否则到下一个信道
-        is_adv_interval_started = 0;
-        /* New advertising interval has started. Reset channel index */
-        adv_chn_idx = 0;
-    } else {
-        adv_chn_idx++;
-    }
+//    if (is_chn_interval_started == 0) {    //如果chn_interval没有到，就等待，什么都不做
+////        SET_1600_SLEEP_MODE();
+////        POWER_IDLE();          //mcu进入空闲模式(2.8mA)
+////        SET_1600_IDLE_MODE();
+////        
+//        if (is_chn_interval_started == 0) {    //如果chn_interval没有到，就等待，什么都不做
+//            /* Channel interval not started yet */
+//            return;
+//        }
+//    }
+//    is_chn_interval_started = 0;           //如果到了就设为0，并进行下面的处理
 
-    if (adv_chn_idx >= sizeof(adv_chns)) {
-        /* All channels have been used in current advertising interval */
-        return;
-    }
+//    if (is_adv_interval_started == 1) {        //如果是新的adv interval开始了，就从37信道开始，否则到下一个信道
+//        is_adv_interval_started = 0;
+//        /* New advertising interval has started. Reset channel index */
+//        adv_chn_idx = 0;
+//    } else {
+//        adv_chn_idx++;
+//    }
+//
+//    if (adv_chn_idx >= sizeof(adv_chns)) {
+//        /* All channels have been used in current advertising interval */
+//        return;
+//    }
 
+      if(++adv_chn_idx==3)
+        adv_chn_idx=0;
 
+#endif
 
-    /* Change channel */
-    ble_set_channel(adv_chns[adv_chn_idx]);
-
-    if (ble_curr_state == BLE_STATE_ADV) {
-        /* Send ADV packet */
+      /* Change channel */
+      ble_set_channel(adv_chns[adv_chn_idx]);
       
-        ble_send_adv_ind_pkt(adv_chns[adv_chn_idx]);
-       
-    }
-    
-#define IBEACON_PDU_LEN     (6 + 30) // 6-byte ADVA, 30-byte IBEACON
-#define EXP_LEN             (1 + IBEACON_PDU_LEN) // 1-byte Length
+//      if(++adv_chn_idx==3)adv_chn_idx=0;
 
-    do {
-        /* Try to receive iBeacon */
+      
+      if (ble_curr_state == BLE_STATE_ADV) {
+          /* Send ADV packet */
+        TESTIO_TOGGLE;
+          ble_send_adv_ind_pkt(adv_chns[adv_chn_idx]);
+         TESTIO_TOGGLE;
+     }
+  
+//      delay_ms(500);
+    
+    #define IBEACON_PDU_LEN     (6 + 30) // 6-byte ADVA, 30-byte IBEACON
+    #define EXP_LEN             (1 + IBEACON_PDU_LEN) // 1-byte Length
+
+//        sleep(1);//MCU休眠
+//        after_wakeup();
         
-        rx_len = ble_rx(&tmp.pdu.adv_ind.header.bytes[1], EXP_LEN);
-      
-        if ((rx_len >= EXP_LEN) &&
-                (tmp.pdu.adv_ind.header.bits.length == IBEACON_PDU_LEN)) {
-            /* Probably iBeacon to our device */
-            if (finder_proc_pkt(tmp.pdu.adv_ind.advd)) {
-                /* BLE protocol/timer changed by command */
-                break;
-            }
-        } else if (rx_len == 0) {
-            /* Rx timeout */
-            break;
-        }
-    } while (ble_curr_state == BLE_STATE_SCAN || rx_index--);
+#if 1
+        do {
+            /* Try to receive iBeacon */
 
-    
+            rx_len = ble_rx(&tmp.pdu.adv_ind.header.bytes[1], EXP_LEN);
+          
+            if ((rx_len >= EXP_LEN) &&
+                    (tmp.pdu.adv_ind.header.bits.length == IBEACON_PDU_LEN)) {
+//                       TESTIO_TOGGLE;
+                    
+                     
+                /* Probably iBeacon to our device */
+                if (finder_proc_pkt(tmp.pdu.adv_ind.advd)) {
+                    /* BLE protocol/timer changed by command */
+                 
+                    break;
+                }else{
+//                 TESTIO_TOGGLE;
+                }
+                
+            } else if (rx_len == 0) {
+                /* Rx timeout */
+//                break;
+            }
+        } while (ble_curr_state == BLE_STATE_SCAN || rx_idex--);
+#endif  
+   
 }

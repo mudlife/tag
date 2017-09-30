@@ -34,7 +34,7 @@ static u8 send_times[16]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
 extern uint32_t PotVoltage;
 
 static volatile u8 t_info=0;//t_info=0,transmit the custom message(key+id),t_info=1,transmit all message(own message+key+id)
-u8 t_space=0;
+u8 t_space=3;
 static volatile signed char t_times=6;
 static volatile u8 t_pa=0;
 static volatile u8 t_para_test=0;
@@ -43,7 +43,7 @@ static volatile u16 totaltimes=0;
 static u32 timecnt=0;
 
 static bool dActiveFlag=FALSE;
-u8 loop_count = 9;
+u8 loop_count = 3;
 extern u8 dVDDlow;
 extern u8 dOwnInfoBuf[];
 extern u8 dCustInfoBuf[];
@@ -85,7 +85,7 @@ int main(void)
         iwdg_init();
 	get_id_information();
 	io_init();
-//        testio_init();
+        testio_init();
 	randtime_init();
 	_1600_io_init();
 	spi_init();
@@ -99,22 +99,22 @@ int main(void)
   	while(1)
  	{
           
+           IWDG_ReloadCounter();
+          
             _CE__0;//WL1600失能
             delay_ms(2);
             _CE__1;//WL1600使能
             delay_ms(1);
             _1600_registers_init(0);//初始化WL1600寄存器，配置为BLE模式
-            
-//           if(finder_is_oper_timeout == 1){
-//              finder_is_oper_timeout = 0;
-//              finder_proc_oper_timeout();
-//            }
+//            sleep(1);//MCU休眠
+//            after_wakeup();
 //          
-            for(i=0;i<loop_count;i++){//BLE 发送和接收
-              IWDG_ReloadCounter();
-
-                 ble_proto_run();
-              delay_ms(100);
+            for(i=0;i<3;i++){//BLE 发送和接收
+              
+              
+              ble_proto_run();
+//              write1600_bit(70,6,1);
+              delay_ms(10);
             }
           
           
@@ -126,15 +126,23 @@ int main(void)
   //           delay_ms(1);
             _1600_registers_init(1);//初始化WL1600寄存器，配置为 防盗器 模式
 
-            if(dActiveFlag)
-            {
-  //            //timecnt=0;
-              output_message();
-            
-            }
-            else
-            {
-              detect_process();
+//            for(i=0;i<loop_count;i++){
+              if(dActiveFlag)
+              {
+    //            //timecnt=0;
+                output_message();
+              
+              }
+              else
+              {
+                detect_process();
+              }
+//            
+//            }
+               
+           if(finder_is_oper_timeout == 1){
+              finder_is_oper_timeout = 0;
+              finder_proc_oper_timeout();
             }
             
              _CE__0;//WL1600失能
@@ -142,7 +150,7 @@ int main(void)
             after_wakeup();
 //            delay_ms(90);
             _CE__1;//WL1600使能
-            delay_ms(1);
+
      
   	}
   	return 0;
@@ -205,6 +213,7 @@ static void detect_process(void)
   write1600(15,receive_channel);
   se2438t_enter_high_gain_R_mode();
   _1600_rx_on();
+  delay_us(2);
 //  TESTIO_TOGGLE;
   for(i=0;i<22;i++)
   {
@@ -253,7 +262,7 @@ static void detect_process(void)
     }
   }
 //  TESTIO_TOGGLE;
-//  write1600_bit(70,6,1);
+  write1600_bit(70,6,1);
    DISABLE_RX();
   se2438t_enter_all_off_mode();
   if(!dActiveFlag)
@@ -307,6 +316,7 @@ static void output_message(void)
 //  }
   se2438t_enter_T_mode();
   _1600_tx_on();
+  delay_us(2);
     while(!_1600_pkt_status())
   {
     if(++cnt>=50)
